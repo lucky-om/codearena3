@@ -107,16 +107,10 @@ export function useCardDraw(drawType: DrawType): UseCardDrawReturn {
     await new Promise(resolve => setTimeout(resolve, 2500));
 
     try {
-      // Record the result to the sheet
-      const formData = new FormData();
-      formData.append('action', 'record');
-      formData.append('team', teamName.trim());
-      formData.append('result', mappedResult);
-
-      await fetch(sheetUrl, {
-        method: 'POST',
-        body: formData
-      });
+      // Record the result to the sheet using GET with URL params (CORS-friendly)
+      const recordUrl = `${sheetUrl}?action=record&team=${encodeURIComponent(teamName.trim())}&result=${encodeURIComponent(mappedResult)}`;
+      
+      await fetch(recordUrl);
       
       // Mark as participated
       localStorage.setItem(storageKey, 'true');
