@@ -16,6 +16,12 @@ interface UseCardDrawReturn {
   resetState: () => void;
 }
 
+// Google Sheets Web App URLs
+const SHEET_URLS = {
+  wildcard: 'https://script.google.com/macros/s/AKfycbx28oHrmS7nBVQlvJAbc0uLg7Fldc0Nz4wYaKG48Q9W_6yiE2DyqeppUYPypNcIESgS/exec',
+  penalty: 'https://script.google.com/macros/s/AKfycbzXGr4vz4I-3sdRrQCtQxxzNkHlW2JyEeCiSeycP5bk07bJS5g5etFGi6PyjELYH-mlXA/exec'
+};
+
 // Wildcard mappings: 1-3
 const WILDCARD_RESULTS: Record<number, string> = {
   1: "Skip",
@@ -41,6 +47,7 @@ export function useCardDraw(drawType: DrawType): UseCardDrawReturn {
   const [error, setError] = useState<string | null>(null);
 
   const storageKey = `${STORAGE_KEY_PREFIX}${drawType}`;
+  const sheetUrl = SHEET_URLS[drawType];
 
   // Check localStorage on mount
   useEffect(() => {
@@ -60,17 +67,12 @@ export function useCardDraw(drawType: DrawType): UseCardDrawReturn {
     setError(null);
 
     try {
-      // Simulate API check - in production, replace with actual Google Sheets Web App URL
-      // const response = await fetch(`YOUR_GOOGLE_SHEETS_WEB_APP_URL?action=check&team=${encodeURIComponent(teamName)}&type=${drawType}`);
-      // const data = await response.json();
+      // Check if team exists in the sheet
+      const checkUrl = `${sheetUrl}?action=check&team=${encodeURIComponent(teamName.trim())}`;
+      const response = await fetch(checkUrl);
+      const data = await response.json();
       
-      // Simulated delay for demo
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Simulated response - in production, check if team exists
-      const teamExists = false; // Replace with actual check: data.exists
-      
-      if (teamExists) {
+      if (data.exists) {
         setError('This team has already participated!');
         setHasParticipated(true);
         localStorage.setItem(storageKey, 'true');
@@ -78,13 +80,14 @@ export function useCardDraw(drawType: DrawType): UseCardDrawReturn {
         setIsVerified(true);
       }
     } catch (err) {
-      // For demo purposes, allow verification even if API fails
-      console.log('API not configured, proceeding with demo mode');
+      console.error('Verification error:', err);
+      // If API fails, allow verification to proceed (fail-open for demo)
+      // You may want to change this to fail-closed in production
       setIsVerified(true);
     } finally {
       setIsVerifying(false);
     }
-  }, [teamName, drawType, storageKey]);
+  }, [teamName, sheetUrl, storageKey]);
 
   const spinCard = useCallback(async () => {
     if (!isVerified) return;
@@ -104,32 +107,31 @@ export function useCardDraw(drawType: DrawType): UseCardDrawReturn {
     await new Promise(resolve => setTimeout(resolve, 2500));
 
     try {
-      // Silent recording - in production, replace with actual Google Sheets Web App URL
-      // await fetch('YOUR_GOOGLE_SHEETS_WEB_APP_URL', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({
-      //     action: 'record',
-      //     team: teamName,
-      //     result: mappedResult,
-      //     type: drawType
-      //   })
-      // });
-      
-      console.log('Recording (demo):', { team: teamName, result: mappedResult, type: drawType });
+      // Record the result to the sheet
+      const formData = new FormData();
+      formData.append('action', 'record');
+      formData.append('team', teamName.trim());
+      formData.append('result', mappedResult);
+
+      await fetch(sheetUrl, {
+        method: 'POST',
+        body: formData
+      });
       
       // Mark as participated
       localStorage.setItem(storageKey, 'true');
       setHasParticipated(true);
       setIsRecorded(true);
     } catch (err) {
-      // Even if recording fails, show success to user
-      console.log('Recording failed, but proceeding');
+      console.error('Recording error:', err);
+      // Even if recording fails, show success to user (silent failure)
+      localStorage.setItem(storageKey, 'true');
+      setHasParticipated(true);
       setIsRecorded(true);
     } finally {
       setIsSpinning(false);
     }
-  }, [isVerified, teamName, drawType, storageKey]);
+  }, [isVerified, teamName, drawType, sheetUrl, storageKey]);
 
   const resetState = useCallback(() => {
     setTeamName('');
