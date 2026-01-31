@@ -18,8 +18,8 @@ interface UseCardDrawReturn {
 
 // Google Sheets Web App URLs
 const SHEET_URLS = {
-  wildcard: 'https://script.google.com/macros/s/AKfycbx28oHrmS7nBVQlvJAbc0uLg7Fldc0Nz4wYaKG48Q9W_6yiE2DyqeppUYPypNcIESgS/exec',
-  penalty: 'https://script.google.com/macros/s/AKfycbzXGr4vz4I-3sdRrQCtQxxzNkHlW2JyEeCiSeycP5bk07bJS5g5etFGi6PyjELYH-mlXA/exec'
+  wildcard: 'https://script.google.com/macros/s/AKfycbzCKeGRgxlau0gUPN17bBseEwkB3p3pemTDkK-A7RbT9zwxPrB_KucbMvJdFR1IwM5m/exec',
+  penalty: 'https://script.google.com/macros/s/AKfycbyBkY9JuZBxRdlRA5DW-lO1-U_kXh0JbQwNmyrT9kD5EFzbiA7cJSIctA7U8jZGVRTglA/exec'
 };
 
 // Wildcard mappings: 1-3
