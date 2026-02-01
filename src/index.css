@@ -15,14 +15,14 @@
     --popover: 230 30% 8%;
     --popover-foreground: 180 100% 95%;
 
-    --primary: 186 100% 50%;
+    --primary: 142 76% 45%;
     --primary-foreground: 230 25% 5%;
 
     --secondary: 300 100% 50%;
     --secondary-foreground: 230 25% 5%;
 
     --muted: 230 20% 15%;
-    --muted-foreground: 180 20% 60%;
+    --muted-foreground: 142 20% 60%;
 
     --accent: 300 100% 50%;
     --accent-foreground: 230 25% 5%;
@@ -30,16 +30,16 @@
     --destructive: 0 84% 60%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 186 50% 30%;
+    --border: 142 50% 30%;
     --input: 230 30% 12%;
-    --ring: 186 100% 50%;
+    --ring: 142 76% 45%;
 
     --radius: 0.75rem;
 
     /* Custom neon colors */
-    --neon-cyan: 186 100% 50%;
+    --neon-cyan: 142 76% 45%;
     --neon-magenta: 300 100% 50%;
-    --neon-blue: 220 100% 60%;
+    --neon-green: 142 76% 45%;
     --neon-purple: 270 100% 60%;
 
     /* Glow intensities */
@@ -50,7 +50,7 @@
 
     /* Glass effect */
     --glass-bg: 230 30% 10% / 0.7;
-    --glass-border: 186 100% 50% / 0.3;
+    --glass-border: 142 76% 45% / 0.3;
   }
 
   .dark {
@@ -204,6 +204,11 @@
   .flicker {
     animation: flicker 4s linear infinite;
   }
+
+  /* Card shuffle animation */
+  .animate-card-shuffle {
+    animation: card-shuffle 0.3s ease-in-out infinite;
+  }
 }
 
 @keyframes pulse-cyan {
@@ -252,10 +257,25 @@
   54% { opacity: 0.9; }
 }
 
+@keyframes card-shuffle {
+  0%, 100% { 
+    transform: translateY(0) rotate(0deg); 
+  }
+  25% { 
+    transform: translateY(-10px) rotate(-5deg); 
+  }
+  50% { 
+    transform: translateY(-5px) rotate(0deg); 
+  }
+  75% { 
+    transform: translateY(-10px) rotate(5deg); 
+  }
+}
+
 /* Background gradient */
 .arena-bg {
   background: 
-    radial-gradient(ellipse at top, hsl(220 100% 10% / 0.8) 0%, transparent 50%),
+    radial-gradient(ellipse at top, hsl(142 76% 10% / 0.8) 0%, transparent 50%),
     radial-gradient(ellipse at bottom, hsl(300 100% 10% / 0.5) 0%, transparent 50%),
     linear-gradient(180deg, hsl(230 25% 3%) 0%, hsl(230 25% 8%) 100%);
 }
