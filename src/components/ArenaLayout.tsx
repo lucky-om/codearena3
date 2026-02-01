@@ -12,7 +12,7 @@ export function ArenaLayout({ children, isMuted, onToggleMute }: ArenaLayoutProp
   return (
     <div className="min-h-screen arena-bg cyber-grid scanlines relative overflow-hidden">
       {/* Ambient glow effects */}
-      <div className="fixed top-0 left-1/4 w-96 h-96 bg-neon-green/20 rounded-full blur-[150px] pointer-events-none" />
+      <div className="fixed top-0 left-1/4 w-96 h-96 bg-neon-cyan/20 rounded-full blur-[150px] pointer-events-none" />
       <div className="fixed bottom-0 right-1/4 w-96 h-96 bg-neon-magenta/20 rounded-full blur-[150px] pointer-events-none" />
       
       {/* Top controls */}
