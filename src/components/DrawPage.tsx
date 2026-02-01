@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { ArenaLayout } from './ArenaLayout';
 import { NeonCard } from './NeonCard';
+import { CardSelectionAnimation } from './CardSelectionAnimation';
 import { useCardDraw } from '@/hooks/useCardDraw';
 import { useSound } from '@/hooks/useSound';
 import { Sparkles, Zap, Lock, CheckCircle2, Loader2 } from 'lucide-react';
@@ -67,7 +68,7 @@ export function DrawPage({ type }: DrawPageProps) {
         </p>
       </header>
 
-      <NeonCard variant={variant} isSpinning={isSpinning} className="mb-8 animate-scale-in">
+      <NeonCard variant={variant} isSpinning={false} className="mb-8 animate-scale-in">
         {hasParticipated && !isRecorded ? (
           <div className="text-center">
             <Lock className={cn(
@@ -90,12 +91,9 @@ export function DrawPage({ type }: DrawPageProps) {
           </div>
         ) : isSpinning ? (
           <div className="text-center">
-            <div className={cn(
-              "w-20 h-20 mx-auto mb-4 rounded-full border-4 border-dashed animate-spin",
-              isWildcard ? 'border-primary' : 'border-secondary'
-            )} />
-            <p className="font-display text-lg text-foreground flicker">SHUFFLING...</p>
-            <p className="text-muted-foreground text-sm mt-2">The cards are being drawn</p>
+            <CardSelectionAnimation variant={variant} isSpinning={isSpinning} />
+            <p className="font-display text-lg text-foreground flicker mt-4">SELECTING CARD...</p>
+            <p className="text-muted-foreground text-sm mt-2">Your fate is being decided</p>
           </div>
         ) : (
           <div className="text-center">
