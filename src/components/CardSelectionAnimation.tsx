@@ -5,10 +5,11 @@ import { Sparkles, Zap } from 'lucide-react';
 interface CardSelectionAnimationProps {
   variant: 'cyan' | 'magenta';
   isSpinning: boolean;
+  cardCount?: number;
   onComplete?: () => void;
 }
 
-export function CardSelectionAnimation({ variant, isSpinning, onComplete }: CardSelectionAnimationProps) {
+export function CardSelectionAnimation({ variant, isSpinning, cardCount = 3, onComplete }: CardSelectionAnimationProps) {
   const [selectedCard, setSelectedCard] = useState<number | null>(null);
   const [isShuffling, setIsShuffling] = useState(false);
 
@@ -20,16 +21,16 @@ export function CardSelectionAnimation({ variant, isSpinning, onComplete }: Card
       // After shuffling, select a random card
       const shuffleTimer = setTimeout(() => {
         setIsShuffling(false);
-        const randomCard = Math.floor(Math.random() * 3);
+        const randomCard = Math.floor(Math.random() * cardCount);
         setSelectedCard(randomCard);
         onComplete?.();
       }, 2000);
 
       return () => clearTimeout(shuffleTimer);
     }
-  }, [isSpinning, onComplete]);
+  }, [isSpinning, cardCount, onComplete]);
 
-  const cards = [0, 1, 2];
+  const cards = Array.from({ length: cardCount }, (_, i) => i);
 
   return (
     <div className="flex gap-4 justify-center items-center py-4">
