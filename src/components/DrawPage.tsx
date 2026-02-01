@@ -4,7 +4,7 @@ import { NeonCard } from './NeonCard';
 import { CardSelectionAnimation } from './CardSelectionAnimation';
 import { useCardDraw } from '@/hooks/useCardDraw';
 import { useSound } from '@/hooks/useSound';
-import { Sparkles, Zap, Lock, CheckCircle2, Loader2 } from 'lucide-react';
+import { Lock, CheckCircle2, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface DrawPageProps {
@@ -29,6 +29,7 @@ export function DrawPage({ type }: DrawPageProps) {
 
   const isWildcard = type === 'wildcard';
   const variant = isWildcard ? 'cyan' : 'magenta';
+  const cardCount = isWildcard ? 3 : 2;
 
   // Play sounds on state changes
   useEffect(() => {
@@ -91,18 +92,14 @@ export function DrawPage({ type }: DrawPageProps) {
           </div>
         ) : isSpinning ? (
           <div className="text-center">
-            <CardSelectionAnimation variant={variant} isSpinning={isSpinning} />
+            <CardSelectionAnimation variant={variant} isSpinning={isSpinning} cardCount={cardCount} />
             <p className="font-display text-lg text-foreground flicker mt-4">SELECTING CARD...</p>
             <p className="text-muted-foreground text-sm mt-2">Your fate is being decided</p>
           </div>
         ) : (
           <div className="text-center">
-            {isWildcard ? (
-              <Sparkles className="w-16 h-16 mx-auto mb-4 text-primary float" />
-            ) : (
-              <Zap className="w-16 h-16 mx-auto mb-4 text-secondary float" />
-            )}
-            <p className="font-display text-xl text-foreground">
+            <CardSelectionAnimation variant={variant} isSpinning={false} cardCount={cardCount} />
+            <p className="font-display text-xl text-foreground mt-4">
               {isWildcard ? 'DRAW YOUR POWER' : 'ACCEPT YOUR FATE'}
             </p>
             <p className="text-muted-foreground text-sm mt-2">
