@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import { ArenaLayout } from './ArenaLayout';
-import { NeonCard } from './NeonCard';
 import { CardSelectionAnimation } from './CardSelectionAnimation';
 import { useCardDraw } from '@/hooks/useCardDraw';
 import { useSound } from '@/hooks/useSound';
@@ -69,45 +68,40 @@ export function DrawPage({ type }: DrawPageProps) {
         </p>
       </header>
 
-      <NeonCard variant={variant} isSpinning={false} className="mb-8 animate-scale-in">
-        {hasParticipated && !isRecorded ? (
-          <div className="text-center">
-            <Lock className={cn(
-              "w-16 h-16 mx-auto mb-4",
-              isWildcard ? 'text-primary' : 'text-secondary'
-            )} />
-            <p className="font-display text-lg text-foreground">ALREADY PARTICIPATED</p>
-            <p className="text-muted-foreground text-sm mt-2">This device has already drawn a card</p>
-          </div>
-        ) : isRecorded ? (
-          <div className="text-center">
-            <CheckCircle2 className={cn(
-              "w-16 h-16 mx-auto mb-4 animate-scale-in",
-              isWildcard ? 'text-primary' : 'text-secondary'
-            )} />
-            <p className="font-display text-lg text-foreground flicker">FATE SEALED</p>
-            <p className="text-muted-foreground text-sm mt-2" role="status">
-              Your destiny has been recorded
-            </p>
-          </div>
-        ) : isSpinning ? (
-          <div className="text-center">
-            <CardSelectionAnimation variant={variant} isSpinning={isSpinning} cardCount={cardCount} />
-            <p className="font-display text-lg text-foreground flicker mt-4">SELECTING CARD...</p>
-            <p className="text-muted-foreground text-sm mt-2">Your fate is being decided</p>
-          </div>
-        ) : (
-          <div className="text-center">
-            <CardSelectionAnimation variant={variant} isSpinning={false} cardCount={cardCount} />
-            <p className="font-display text-xl text-foreground mt-4">
-              {isWildcard ? 'DRAW YOUR POWER' : 'ACCEPT YOUR FATE'}
-            </p>
-            <p className="text-muted-foreground text-sm mt-2">
-              {isWildcard ? '3 possible wildcards await' : '2 penalty outcomes'}
-            </p>
-          </div>
-        )}
-      </NeonCard>
+      {hasParticipated && !isRecorded ? (
+        <div className="text-center mb-8 animate-scale-in">
+          <Lock className={cn(
+            "w-16 h-16 mx-auto mb-4",
+            isWildcard ? 'text-primary' : 'text-secondary'
+          )} />
+          <p className="font-display text-lg text-foreground">ALREADY PARTICIPATED</p>
+          <p className="text-muted-foreground text-sm mt-2">This device has already drawn a card</p>
+        </div>
+      ) : isRecorded ? (
+        <div className="text-center mb-8 animate-scale-in">
+          <CheckCircle2 className={cn(
+            "w-16 h-16 mx-auto mb-4 animate-scale-in",
+            isWildcard ? 'text-primary' : 'text-secondary'
+          )} />
+          <p className="font-display text-lg text-foreground flicker">FATE SEALED</p>
+          <p className="text-muted-foreground text-sm mt-2" role="status">
+            Your destiny has been recorded
+          </p>
+        </div>
+      ) : (
+        <div className="text-center mb-8 animate-scale-in">
+          <CardSelectionAnimation variant={variant} isSpinning={isSpinning} cardCount={cardCount} />
+          <p className={cn(
+            "font-display text-xl text-foreground mt-6",
+            isSpinning && "flicker"
+          )}>
+            {isSpinning ? 'SELECTING CARD...' : (isWildcard ? 'DRAW YOUR POWER' : 'ACCEPT YOUR FATE')}
+          </p>
+          <p className="text-muted-foreground text-sm mt-2">
+            {isSpinning ? 'Your fate is being decided' : (isWildcard ? '3 possible wildcards await' : '2 penalty outcomes')}
+          </p>
+        </div>
+      )}
 
       {/* Input section */}
       {!hasParticipated && !isRecorded && (
