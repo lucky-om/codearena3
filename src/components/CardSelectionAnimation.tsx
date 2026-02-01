@@ -27,13 +27,16 @@ export function CardSelectionAnimation({ variant, isSpinning, cardCount = 3, onC
       }, 2000);
 
       return () => clearTimeout(shuffleTimer);
+    } else {
+      setSelectedCard(null);
+      setIsShuffling(false);
     }
   }, [isSpinning, cardCount, onComplete]);
 
   const cards = Array.from({ length: cardCount }, (_, i) => i);
 
   return (
-    <div className="flex gap-4 justify-center items-center py-4">
+    <div className="flex gap-4 md:gap-6 justify-center items-center py-4">
       {cards.map((cardIndex) => {
         const isSelected = selectedCard === cardIndex;
         const isNotSelected = selectedCard !== null && !isSelected;
@@ -42,38 +45,41 @@ export function CardSelectionAnimation({ variant, isSpinning, cardCount = 3, onC
           <div
             key={cardIndex}
             className={cn(
-              "relative w-20 h-28 md:w-24 md:h-32 rounded-xl transition-all duration-500",
-              "border-2 flex items-center justify-center",
+              "relative w-24 h-36 md:w-32 md:h-44 rounded-2xl transition-all duration-500",
+              "border-2 flex flex-col items-center justify-center",
+              "glass-card",
               variant === 'cyan' 
-                ? 'border-primary bg-primary/10' 
-                : 'border-secondary bg-secondary/10',
+                ? 'border-primary' 
+                : 'border-secondary',
               isShuffling && 'animate-card-shuffle',
-              isSelected && 'scale-125 z-10',
+              isSelected && 'scale-110 z-10',
               isNotSelected && 'opacity-30 scale-90',
-              isSelected && variant === 'cyan' && 'shadow-[0_0_30px_hsl(var(--neon-cyan)/0.8)]',
-              isSelected && variant === 'magenta' && 'shadow-[0_0_30px_hsl(var(--neon-magenta)/0.8)]'
+              !isSpinning && !isSelected && variant === 'cyan' && 'pulse-glow-cyan',
+              !isSpinning && !isSelected && variant === 'magenta' && 'pulse-glow-magenta',
+              isSelected && variant === 'cyan' && 'shadow-[0_0_40px_hsl(var(--neon-cyan)/0.9)]',
+              isSelected && variant === 'magenta' && 'shadow-[0_0_40px_hsl(var(--neon-magenta)/0.9)]'
             )}
             style={{
               animationDelay: isShuffling ? `${cardIndex * 0.1}s` : '0s',
             }}
           >
-            {/* Card back pattern */}
+            {/* Corner decorations */}
             <div className={cn(
-              "absolute inset-2 rounded-lg opacity-20",
-              variant === 'cyan' ? 'bg-primary' : 'bg-secondary'
-            )}>
-              <div className="w-full h-full grid grid-cols-3 grid-rows-4 gap-0.5 p-1">
-                {Array.from({ length: 12 }).map((_, i) => (
-                  <div 
-                    key={i} 
-                    className={cn(
-                      "rounded-sm",
-                      variant === 'cyan' ? 'bg-primary/50' : 'bg-secondary/50'
-                    )} 
-                  />
-                ))}
-              </div>
-            </div>
+              "absolute top-2 left-2 w-4 h-4 border-t-2 border-l-2",
+              variant === 'cyan' ? 'border-primary' : 'border-secondary'
+            )} />
+            <div className={cn(
+              "absolute top-2 right-2 w-4 h-4 border-t-2 border-r-2",
+              variant === 'cyan' ? 'border-primary' : 'border-secondary'
+            )} />
+            <div className={cn(
+              "absolute bottom-2 left-2 w-4 h-4 border-b-2 border-l-2",
+              variant === 'cyan' ? 'border-primary' : 'border-secondary'
+            )} />
+            <div className={cn(
+              "absolute bottom-2 right-2 w-4 h-4 border-b-2 border-r-2",
+              variant === 'cyan' ? 'border-primary' : 'border-secondary'
+            )} />
 
             {/* Card icon */}
             <div className={cn(
@@ -82,13 +88,15 @@ export function CardSelectionAnimation({ variant, isSpinning, cardCount = 3, onC
             )}>
               {variant === 'cyan' ? (
                 <Sparkles className={cn(
-                  "w-8 h-8",
-                  isShuffling && 'animate-pulse'
+                  "w-10 h-10 md:w-12 md:h-12",
+                  isShuffling && 'animate-pulse',
+                  !isSpinning && 'float'
                 )} />
               ) : (
                 <Zap className={cn(
-                  "w-8 h-8",
-                  isShuffling && 'animate-pulse'
+                  "w-10 h-10 md:w-12 md:h-12",
+                  isShuffling && 'animate-pulse',
+                  !isSpinning && 'float'
                 )} />
               )}
             </div>
@@ -96,7 +104,7 @@ export function CardSelectionAnimation({ variant, isSpinning, cardCount = 3, onC
             {/* Selection glow */}
             {isSelected && (
               <div className={cn(
-                "absolute inset-0 rounded-xl animate-pulse",
+                "absolute inset-0 rounded-2xl animate-pulse",
                 variant === 'cyan' 
                   ? 'bg-primary/20' 
                   : 'bg-secondary/20'
@@ -105,7 +113,7 @@ export function CardSelectionAnimation({ variant, isSpinning, cardCount = 3, onC
 
             {/* Card number */}
             <div className={cn(
-              "absolute bottom-2 text-xs font-display",
+              "absolute bottom-4 text-sm font-display font-bold",
               variant === 'cyan' ? 'text-primary' : 'text-secondary'
             )}>
               {cardIndex + 1}
