@@ -11,6 +11,7 @@ interface UseCardDrawReturn {
   isRecorded: boolean;
   hasParticipated: boolean;
   error: string | null;
+  selectedCardIndex: number | null;
   verifyTeam: () => Promise<void>;
   spinCard: () => Promise<void>;
   resetState: () => void;
@@ -45,6 +46,7 @@ export function useCardDraw(drawType: DrawType): UseCardDrawReturn {
   const [isRecorded, setIsRecorded] = useState(false);
   const [hasParticipated, setHasParticipated] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [selectedCardIndex, setSelectedCardIndex] = useState<number | null>(null);
 
   const storageKey = `${STORAGE_KEY_PREFIX}${drawType}`;
   const sheetUrl = SHEET_URLS[drawType];
@@ -95,9 +97,14 @@ export function useCardDraw(drawType: DrawType): UseCardDrawReturn {
     setIsSpinning(true);
     setError(null);
 
-    // Generate random result
+    // Generate random result using crypto for better randomness
     const maxResult = drawType === 'wildcard' ? 3 : 2;
-    const randomResult = Math.floor(Math.random() * maxResult) + 1;
+    const randomArray = new Uint32Array(1);
+    crypto.getRandomValues(randomArray);
+    const randomResult = (randomArray[0] % maxResult) + 1;
+    
+    // Set the selected card index (0-based for the animation)
+    setSelectedCardIndex(randomResult - 1);
     
     // Map result to string
     const resultMapping = drawType === 'wildcard' ? WILDCARD_RESULTS : PENALTY_RESULTS;
@@ -132,6 +139,7 @@ export function useCardDraw(drawType: DrawType): UseCardDrawReturn {
     setIsVerified(false);
     setIsRecorded(false);
     setError(null);
+    setSelectedCardIndex(null);
   }, []);
 
   return {
@@ -143,6 +151,7 @@ export function useCardDraw(drawType: DrawType): UseCardDrawReturn {
     isRecorded,
     hasParticipated,
     error,
+    selectedCardIndex,
     verifyTeam,
     spinCard,
     resetState
