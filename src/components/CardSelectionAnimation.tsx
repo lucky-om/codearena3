@@ -6,40 +6,40 @@ interface CardSelectionAnimationProps {
   variant: 'cyan' | 'magenta';
   isSpinning: boolean;
   cardCount?: number;
+  selectedCardIndex: number | null;
   onComplete?: () => void;
 }
 
-export function CardSelectionAnimation({ variant, isSpinning, cardCount = 3, onComplete }: CardSelectionAnimationProps) {
-  const [selectedCard, setSelectedCard] = useState<number | null>(null);
+export function CardSelectionAnimation({ variant, isSpinning, cardCount = 3, selectedCardIndex, onComplete }: CardSelectionAnimationProps) {
+  const [displayedSelection, setDisplayedSelection] = useState<number | null>(null);
   const [isShuffling, setIsShuffling] = useState(false);
 
   useEffect(() => {
-    if (isSpinning) {
-      setSelectedCard(null);
+    if (isSpinning && selectedCardIndex !== null) {
+      setDisplayedSelection(null);
       setIsShuffling(true);
       
-      // After shuffling, select a random card
+      // After shuffling, show the pre-determined card
       const shuffleTimer = setTimeout(() => {
         setIsShuffling(false);
-        const randomCard = Math.floor(Math.random() * cardCount);
-        setSelectedCard(randomCard);
+        setDisplayedSelection(selectedCardIndex);
         onComplete?.();
       }, 2000);
 
       return () => clearTimeout(shuffleTimer);
-    } else {
-      setSelectedCard(null);
+    } else if (!isSpinning) {
+      setDisplayedSelection(null);
       setIsShuffling(false);
     }
-  }, [isSpinning, cardCount, onComplete]);
+  }, [isSpinning, selectedCardIndex, onComplete]);
 
   const cards = Array.from({ length: cardCount }, (_, i) => i);
 
   return (
     <div className="flex gap-4 md:gap-6 justify-center items-center py-4">
       {cards.map((cardIndex) => {
-        const isSelected = selectedCard === cardIndex;
-        const isNotSelected = selectedCard !== null && !isSelected;
+        const isSelected = displayedSelection === cardIndex;
+        const isNotSelected = displayedSelection !== null && !isSelected;
         
         return (
           <div

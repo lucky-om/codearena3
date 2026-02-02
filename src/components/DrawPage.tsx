@@ -20,6 +20,7 @@ export function DrawPage({ type }: DrawPageProps) {
     isRecorded,
     hasParticipated,
     error,
+    selectedCardIndex,
     verifyTeam,
     spinCard,
   } = useCardDraw(type);
@@ -104,7 +105,7 @@ export function DrawPage({ type }: DrawPageProps) {
         </div>
       ) : (
         <div className="text-center mb-8 animate-scale-in">
-          <CardSelectionAnimation variant={variant} isSpinning={isSpinning} cardCount={cardCount} onComplete={handleCardSelected} />
+          <CardSelectionAnimation variant={variant} isSpinning={isSpinning} cardCount={cardCount} selectedCardIndex={selectedCardIndex} onComplete={handleCardSelected} />
           <p className={cn(
             "font-display text-xl text-foreground mt-6",
             isSpinning && "flicker"
