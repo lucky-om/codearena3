@@ -13,8 +13,7 @@ const Index = () => {
         <div className="relative inline-block mb-4">
           <h1 className="text-5xl md:text-7xl font-display font-black tracking-wider">
             <span className="neon-text-cyan">CODE</span>
-            <span className="text-foreground mx-3">×</span>
-            <span className="neon-text-magenta">ARENA</span>
+            <span className="neon-text-magenta ml-3">ARENA</span>
           </h1>
           {/* Decorative line */}
           <div className="absolute -bottom-2 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-primary to-transparent" />
