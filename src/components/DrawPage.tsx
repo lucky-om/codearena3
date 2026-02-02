@@ -30,19 +30,33 @@ export function DrawPage({ type }: DrawPageProps) {
   const variant = isWildcard ? 'cyan' : 'magenta';
   const cardCount = isWildcard ? 3 : 2;
 
-  // Play sounds on state changes
+  // Play shuffle sound only during the shuffle phase (first 1.5 seconds)
   useEffect(() => {
     if (isSpinning) {
-      const interval = setInterval(playShuffleSound, 400);
-      return () => clearInterval(interval);
+      playShuffleSound();
+      const interval = setInterval(playShuffleSound, 500);
+      
+      // Stop shuffle sound before card is selected (at 1.5s, card selects at 2s)
+      const stopTimer = setTimeout(() => {
+        clearInterval(interval);
+      }, 1500);
+      
+      return () => {
+        clearInterval(interval);
+        clearTimeout(stopTimer);
+      };
     }
   }, [isSpinning, playShuffleSound]);
 
+  const handleCardSelected = () => {
+    playVictorySound();
+  };
+
   useEffect(() => {
     if (isRecorded) {
-      playVictorySound();
+      // Additional confirmation sound if needed
     }
-  }, [isRecorded, playVictorySound]);
+  }, [isRecorded]);
 
   const handleVerify = () => {
     playClickSound();
@@ -90,7 +104,7 @@ export function DrawPage({ type }: DrawPageProps) {
         </div>
       ) : (
         <div className="text-center mb-8 animate-scale-in">
-          <CardSelectionAnimation variant={variant} isSpinning={isSpinning} cardCount={cardCount} />
+          <CardSelectionAnimation variant={variant} isSpinning={isSpinning} cardCount={cardCount} onComplete={handleCardSelected} />
           <p className={cn(
             "font-display text-xl text-foreground mt-6",
             isSpinning && "flicker"
